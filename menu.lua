@@ -9,7 +9,10 @@ local Camera           = workspace.CurrentCamera
 local LocalPlayer      = Players.LocalPlayer
 
 -- Limpeza de tentativas anteriores
-if _G.CinexCleanup then pcall(_G.CinexCleanup) end
+for _, gui in pairs(game:GetService("CoreGui"):GetChildren()) do
+    if gui.Name == "CinexHub_Mobile" then gui:Destroy() end
+end
+
 local ScreenGui = Instance.new("ScreenGui")
 if syn and syn.protect_gui then syn.protect_gui(ScreenGui); ScreenGui.Parent = game:GetService("CoreGui")
 elseif gethui then ScreenGui.Parent = gethui()
@@ -23,12 +26,10 @@ ScreenGui.DisplayOrder = 9999
 local C = {
     BG = Color3.fromRGB(22, 16, 34), SIDEBAR = Color3.fromRGB(38, 28, 54),
     PANEL = Color3.fromRGB(32, 23, 48), PANELB = Color3.fromRGB(52, 40, 74),
-    PANELC = Color3.fromRGB(60, 46, 86), ACCENT = Color3.fromRGB(175, 95, 255),
-    ACCENT2 = Color3.fromRGB(210, 145, 255), DIM = Color3.fromRGB(100, 55, 168),
+    ACCENT = Color3.fromRGB(175, 95, 255), ACCENT2 = Color3.fromRGB(210, 145, 255),
     TOG_OFF = Color3.fromRGB(65, 50, 90), TOG_ON = Color3.fromRGB(155, 75, 240),
     TEXT = Color3.fromRGB(238, 232, 250), SUBTEXT = Color3.fromRGB(155, 138, 185),
-    BORDER = Color3.fromRGB(85, 58, 128), ACTIVE_BG = Color3.fromRGB(58, 42, 82),
-    BLACK = Color3.fromRGB(10, 6, 18)
+    BORDER = Color3.fromRGB(85, 58, 128), ACTIVE_BG = Color3.fromRGB(58, 42, 82)
 }
 local FONT_BOLD, FONT_SEMI, FONT_REG = Enum.Font.GothamBold, Enum.Font.GothamSemibold, Enum.Font.Gotham
 
@@ -47,7 +48,7 @@ local FloatBtn = New("TextButton", {
 }, ScreenGui)
 Corner(FloatBtn, 22); Stroke(FloatBtn, 2, C.BORDER)
 
--- JANELA PRINCIPAL (90% da tela, centralizada)
+-- JANELA PRINCIPAL
 local Main = New("Frame", {
     Size = UDim2.fromScale(0.90, 0.85),
     Position = UDim2.fromScale(0.5, 0.5),
@@ -91,13 +92,13 @@ local KX = New("TextButton", {Size = UDim2.fromOffset(30, 30), Position = UDim2.
 Corner(KX, 6)
 KX.MouseButton1Click:Connect(function() Main.Visible = false; FloatBtn.Visible = true end)
 
--- SIDEBAR (20% da largura)
+-- SIDEBAR
 local Sidebar = New("Frame", {Size = UDim2.new(0.22, 0, 1, -50), Position = UDim2.new(0, 0, 0, 50), BackgroundColor3 = C.SIDEBAR, ZIndex = 3}, Main)
 local NavList = New("Frame", {Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1, ZIndex = 4}, Sidebar)
 New("UIListLayout", {Padding = UDim.new(0, 4), HorizontalAlignment = Enum.HorizontalAlignment.Center}, NavList)
 New("UIPadding", {PaddingTop = UDim.new(0, 10)}, NavList)
 
--- CONTEÚDO (80% da largura)
+-- CONTEÚDO
 local Content = New("Frame", {Size = UDim2.new(0.78, 0, 1, -50), Position = UDim2.new(0.22, 0, 0, 50), BackgroundColor3 = C.BG, ZIndex = 3}, Main)
 local CatTitle = New("TextLabel", {Size = UDim2.new(1, 0, 0, 40), BackgroundTransparency = 1, Text = "VISUALS", Font = FONT_BOLD, TextSize = 20, TextColor3 = C.TEXT, ZIndex = 5}, Content)
 local Scroll = New("ScrollingFrame", {Size = UDim2.new(1, -20, 1, -50), Position = UDim2.fromOffset(10, 45), BackgroundTransparency = 1, ScrollBarThickness = 4, CanvasSize = UDim2.new(0,0,0,0), AutomaticCanvasSize = Enum.AutomaticSize.Y, ZIndex = 4}, Content)
@@ -114,7 +115,7 @@ for _, tab in ipairs(TABS) do
     New("UIListLayout", {Padding = UDim.new(0, 8)}, Pages[tab.label])
 end
 
--- COMPONENTES SEGUROS
+-- COMPONENTES
 local function MakeToggle(parent, text, default, callback)
     local row = New("Frame", {Size = UDim2.new(1, 0, 0, 45), BackgroundColor3 = C.PANEL, ZIndex = 5}, parent)
     Corner(row, 8); Stroke(row, 1, C.BORDER)
@@ -145,7 +146,7 @@ local function MakeButton(parent, text)
 end
 
 -- ESTADO
-_G.Cinex = { ESP = false, Cross = false }
+_G.Cinex = { ESP = false, Box = false, Cross = false }
 
 -- POPULANDO VISUALS
 MakeToggle(Pages["Visuals"], "enable esp", true, function(s) _G.Cinex.ESP = s end)
